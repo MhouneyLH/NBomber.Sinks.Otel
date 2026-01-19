@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 
-namespace NBomber.Sinks.Prometheus;
+namespace NBomber.Sinks.Otel;
 
 // TODO: remove it when a synchronous gauge will be implemented
 // Workarounds to make ObservableGauges synchronous

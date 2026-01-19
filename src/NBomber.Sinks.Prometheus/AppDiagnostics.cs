@@ -2,7 +2,7 @@
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
-namespace NBomber.Sinks.Prometheus;
+namespace NBomber.Sinks.Otel;
 
 internal sealed class AppDiagnostics
 {
@@ -10,14 +10,13 @@ internal sealed class AppDiagnostics
         typeof(AppDiagnostics).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? typeof(AppDiagnostics).Assembly.GetName().Version!.ToString();
 
-    internal static readonly Meter Meter = new("NBomber.PrometheusSink", AssemblyVersion);
+    internal static readonly Meter Meter = new("NBomber.Sinks.Otel", AssemblyVersion);
 
     internal static readonly SynchronousGauge<int> NodeCount = new(Meter, "cluster.node_count", description: "Number of nodes involved in the test run");
     internal static readonly SynchronousGauge<int> CpuCount = new(Meter, "cluster.node_cpu_count", description: "Number of CPU cores involved in the test run");
 
     internal static readonly Histogram<double> SuccessfulRequestLatency = Meter.CreateHistogram<double>("ok.request.latency", description: "Latency for successful requests", unit: "ms");
     internal static readonly Histogram<double> FailedRequestLatency = Meter.CreateHistogram<double>("fail.request.latency", description: "Latency for failed requests", unit: "ms");
-
 
     internal static void SetUsersCount(double value, params KeyValuePair<string, object?>[]? tags)
     {
