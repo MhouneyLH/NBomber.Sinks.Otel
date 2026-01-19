@@ -93,10 +93,45 @@ public sealed class OtelSink : IReportingSink
     public Task SaveFinalStats(NodeStats stats) =>
         SaveScenarioStats(stats.ScenarioStats);
 
+    // inspired by: https://github.com/PragmaticFlow/NBomber.Sinks.InfluxDB/blob/dev/src/NBomber.Sinks.InfluxDB/InfluxDBSink.cs#L221
     public Task SaveRealtimeMetrics(MetricStats metrics)
     {
+        foreach (var counter in metrics.Counters)
+        {
+            MapCounterMetric(counter);
+        }
+        
+        foreach (var gauge in metrics.Gauges)
+        {
+            MapGaugeMetric(gauge);
+        }
 
         return Task.CompletedTask;
+    }
+
+    private void MapCounterMetric(CounterStats counter)
+    {
+        var tags = BuildMetricTags(counter.ScenarioName, counter.MetricName, counter.UnitOfMeasure, counter.Value);
+        AppDiagnostics.SetTotalRequestsCount(counter.Value, tags);
+    }
+
+    private void MapGaugeMetric(GaugeStats gauge)
+    {
+        var tags = BuildMetricTags(gauge.ScenarioName, gauge.MetricName, gauge.UnitOfMeasure, gauge.Value);
+        AppDiagnostics.SetUsersCount(gauge.Value, tags);
+    }
+
+    private KeyValuePair<string, object?>[] BuildMetricTags(string scenarioName, string metricName, string unit, double value)
+    {
+        var baseTags = GetCustomTagsAsKeyValuePairs();
+        var tags = new List<KeyValuePair<string, object?>>(baseTags)
+        {
+            new("scenario_name", scenarioName),
+            new("metric_name", metricName),
+            new("unit", unit),
+            new("value", value)
+        };
+        return tags.ToArray();
     }
 
     public Task Stop()

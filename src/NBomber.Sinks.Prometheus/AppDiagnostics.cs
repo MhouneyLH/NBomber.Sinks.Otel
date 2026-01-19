@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace NBomber.Sinks.Otel;
 
-internal sealed class AppDiagnostics
+internal static class AppDiagnostics
 {
     internal static readonly string AssemblyVersion =
         typeof(AppDiagnostics).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
