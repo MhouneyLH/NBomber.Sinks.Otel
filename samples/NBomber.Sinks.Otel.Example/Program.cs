@@ -1,5 +1,5 @@
 ﻿using NBomber.CSharp;
-using NBomber.Sinks.Prometheus;
+using NBomber.Sinks.Otel;
 
 var scenario = Scenario.Create("hello_world_scenario", async context =>
 {
@@ -17,6 +17,6 @@ var scenario = Scenario.Create("hello_world_scenario", async context =>
 NBomberRunner
     .RegisterScenarios(scenario)
     .WithReportingInterval(TimeSpan.FromSeconds(5))
-    .WithReportingSinks(new PrometheusSink())
+    .WithReportingSinks(new OtelSink())
     .LoadInfraConfig("infra-config.json")
     .Run();

@@ -1,9 +1,6 @@
 {
-  "PrometheusSink": {
-    "HttpListenerPrefixes": [
-      "http://localhost:9500"
-    ],
-    "ScrapeEndpointPath": "/custom_mentrics_endpoint",
+  "NBomber.Sinks.Otel": {
+    "OtlpExportEndpoint": "http://localhost:9500",
     "CustomTags": [
       {
         "Key": "Environment",
